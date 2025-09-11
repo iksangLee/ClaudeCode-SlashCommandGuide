@@ -130,7 +130,7 @@
             padding: 18px 24px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             font-weight: 600;
             transition: all 0.3s ease;
             line-height: 1.5;
@@ -708,7 +708,7 @@
                 </div>
                 
                 <h3>💡 핵심 추천</h3>
-                <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/cost</code>, <code>/status</code>로, 이것들만 익혀도 Claude Code의 80% 이상을 활용할 수 있습니다.</p>
+                <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/cost</code>, <code>/status</code>로, 이것들만 익혀도 Claude Code의 대부분 기능을 활용할 수 있습니다.</p>
             </div>
             
             <!-- Part 1: 기본 시작 -->
@@ -955,10 +955,10 @@
                         <h4>상세 기능</h4>
                         <ul>
                             <li>오늘, 이번 주, 이번 달, 전체 토큰 사용량 표시</li>
-                            <li>토큰 사용량에 따른 예상 비용 계산</li>
+                            <li>토큰 사용량에 따른 예상 비용 계산 *(추정)</li>
                             <li>현재 세션에서의 토큰 사용량 실시간 모니터링</li>
-                            <li>비용 최적화를 위한 사용 패턴 분석</li>
-                            <li>API 레이트 리미트 및 사용량 경고</li>
+                            <li>비용 최적화를 위한 사용 패턴 분석 *(추정)</li>
+                            <li>API 레이트 리미트 및 사용량 경고 *(추정)</li>
                         </ul>
                     </div>
                 </div>
@@ -1017,10 +1017,10 @@
                         <h4>상세 기능</h4>
                         <ul>
                             <li>Shift+Enter 키 바인딩으로 메시지 전송</li>
-                            <li>멀티라인 입력 모드 활성화</li>
-                            <li>명령 이력 탐색 및 자동완성 기능</li>
-                            <li>터미널 사용성 개선을 위한 키 바인딩 최적화</li>
-                            <li>다양한 터미널 환경에서의 호환성 설정</li>
+                            <li>먀티라인 입력 모드 활성화 *(추정)</li>
+                            <li>명령 이력 탐색 및 자동완성 기능 *(추정)</li>
+                            <li>터미널 사용성 개선을 위한 키 바인딩 최적화 *(추정)</li>
+                            <li>iTerm2, VSCode 등 특정 터미널에 특화된 기능</li>
                         </ul>
                     </div>
                 </div>
@@ -1056,7 +1056,7 @@
                         <ul>
                             <li>Model Context Protocol 서버 연결 상태 관리</li>
                             <li>OAuth 인증을 통한 외부 서비스 연동</li>
-                            <li>GitHub, Jira, Slack 등 다양한 MCP 서버 지원</li>
+                            <li>MCP 프로토콜 기반 다양한 서버 지원 *(구체적 서비스는 가변)</li>
                             <li>연결된 MCP 서버에서 제공하는 슬래시 명령어 자동 등록</li>
                             <li>서버별 기능 및 인증 상태 모니터링</li>
                         </ul>
@@ -1125,6 +1125,11 @@
             <div id="part5" class="section">
                 <h2>📊 Part 5: 실무 활용 가이드</h2>
                 
+                <div class="highlight-box">
+                    <h4 class="highlight-title">⚠️ 중요 안내</h4>
+                    <p>아래의 사용 빈도와 패턴은 예시이며, 실제 사용법은 개인의 작업 환경, 프로젝트 특성, 개별적 선호도에 따라 크게 달라질 수 있습니다.</p>
+                </div>
+                
                 <h3>🎯 21개 명령어 학습 순서</h3>
                 
                 <div class="workflow-section">
@@ -1172,12 +1177,12 @@
                     </div>
                 </div>
                 
-                <h3>📈 사용 빈도별 명령어 분류</h3>
+                <h3>📈 사용 빈도별 명령어 분류 *(예시 기준)</h3>
                 
                 <div class="command-card">
                     <div class="command-title">
-                        <span class="frequency-badge freq-daily">🔥 매일 사용</span>
-                        High Frequency
+                        <span class="frequency-badge freq-daily">🔥 매일 사용 (예시)</span>
+                        High Frequency - 참고용 분류
                     </div>
                     <div class="command-desc">
                         <div class="frequency-list">
@@ -1203,8 +1208,8 @@
                 
                 <div class="command-card">
                     <div class="command-title">
-                        <span class="frequency-badge freq-regular">⚡ 주 3-5회 사용</span>
-                        Regular Use
+                        <span class="frequency-badge freq-regular">⚡ 주 3-5회 사용 (예시)</span>
+                        Regular Use - 참고용 분류
                     </div>
                     <div class="command-desc">
                         <div class="frequency-list">
@@ -1226,8 +1231,8 @@
                 
                 <div class="command-card">
                     <div class="command-title">
-                        <span class="frequency-badge freq-periodic">📅 주 1-2회 사용</span>
-                        Periodic Use
+                        <span class="frequency-badge freq-periodic">📅 주 1-2회 사용 (예시)</span>
+                        Periodic Use - 참고용 분류
                     </div>
                     <div class="command-desc">
                         <div class="frequency-list">
@@ -1249,8 +1254,8 @@
                 
                 <div class="command-card">
                     <div class="command-title">
-                        <span class="frequency-badge freq-occasional">🌙 월 1회 이하</span>
-                        Occasional Use
+                        <span class="frequency-badge freq-occasional">🌙 월 1회 이하 (예시)</span>
+                        Occasional Use - 참고용 분류
                     </div>
                     <div class="command-desc">
                         <div class="frequency-list">
@@ -1272,8 +1277,8 @@
                 
                 <div class="command-card">
                     <div class="command-title">
-                        <span class="frequency-badge freq-situational">🎯 상황별 사용</span>
-                        Situational
+                        <span class="frequency-badge freq-situational">🎯 상황별 사용 (예시)</span>
+                        Situational - 참고용 분류
                     </div>
                     <div class="command-desc">
                         <div class="frequency-list">
@@ -1333,7 +1338,7 @@
                 
                 <div class="highlight-box">
                     <h4 class="highlight-title">🎯 핵심 추천</h4>
-                    <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/cost</code>, <code>/status</code>로, 이것들만 익혀도 Claude Code의 80% 이상을 활용할 수 있습니다.</p>
+                    <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/cost</code>, <code>/status</code>로, 이것들만 익혀도 Claude Code의 대부분 기능을 활용할 수 있습니다.</p>
                 </div>
             </div>
             
@@ -1348,6 +1353,7 @@
         <div class="footer">
             <p>📖 이 가이드는 Anthropic 공식 문서를 기반으로 작성되었습니다.</p>
             <p>최신 정보는 <a href="https://docs.anthropic.com/en/docs/claude-code/slash-commands" class="footer-link">공식 문서</a>에서 확인하세요.</p>
+            <p><small>⚠️ 사용 빈도 및 패턴 분류는 예시이며, 실제 사용법은 개인차가 있습니다.</small></p>
         </div>
     </div>
     
