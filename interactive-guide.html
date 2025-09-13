@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 슬래시 명령어 가이드 - 대화형</title>
+    <style>
+        
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.65;
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 15, 35, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 20px;
+            padding: 24px 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.15), 0 0 40px rgba(0, 245, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .header.scrolled {
+            padding: 16px 32px;
+            border-radius: 16px;
+            background: rgba(15, 15, 35, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 245, 255, 0.2), 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+        
+        .header.scrolled h1 {
+            font-size: 1.5rem !important;
+            margin-bottom: 8px;
+        }
+        
+        .header.scrolled p {
+            font-size: 0.9rem !important;
+            margin-bottom: 4px;
+        }
+        
+        .header.scrolled small {
+            font-size: 0.8rem !important;
+        }
+        
+        .header h1 {
+            color: #f8fafc;
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+        
+        .header p {
+            color: #cbd5e0;
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            font-weight: 500;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+        }
+        
+        .header small {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+        
+        .navigation {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.15);
+        }
+        
+        .navigation h3 {
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: -0.015em;
+        }
+        
+        .nav-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .nav-btn {
+            background: rgba(0, 245, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #00F5FF;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            padding: 18px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            text-transform: none;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            background: rgba(0, 245, 255, 0.25);
+            border-color: rgba(0, 245, 255, 0.6);
+            box-shadow: 0 12px 32px rgba(0, 245, 255, 0.3), 0 0 20px rgba(0, 245, 255, 0.2);
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.8);
+        }
+        
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(30, 144, 255, 0.15);
+            margin-bottom: 32px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .section h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 40px;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            position: relative;
+            text-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+        }
+        
+        .section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #00F5FF 0%, #1E90FF 100%);
+            margin-top: 16px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+        
+        .section h3 {
+            font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+            font-weight: 700;
+            color: #e2e8f0;
+            margin: 48px 0 28px 0;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+        
+        .section p {
+            margin-bottom: 24px;
+            line-height: 1.75;
+            color: #cbd5e0;
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+        
+        .command-card {
+            background: rgba(0, 245, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 245, 255, 0.15);
+            border-left: 4px solid #00F5FF;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 24px 0;
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border 0.2s;
+        }
+        
+        .command-card:hover {
+            transform: translateX(5px) translateY(-2px);
+            background: rgba(0, 245, 255, 0.12);
+            border-color: rgba(0, 245, 255, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 245, 255, 0.2), 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+        
+        .command-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 20px;
+            line-height: 1.25;
+            letter-spacing: -0.015em;
+        }
+        
+        .command-usage {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #00F5FF;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-weight: 500;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 245, 255, 0.2), 0 0 15px rgba(0, 245, 255, 0.1);
+            text-shadow: 0 0 8px rgba(0, 245, 255, 0.6);
+        }
+        
+        .command-desc {
+            margin: 20px 0;
+            line-height: 1.7;
+            font-size: 1rem;
+            color: #cbd5e0;
+        }
+        
+        .command-desc strong {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .command-details {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e0e6ed;
+        }
+        
+        .command-details h4 {
+            color: #00F5FF;
+            margin-bottom: 20px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            text-shadow: 0 0 8px rgba(0, 245, 255, 0.3);
+        }
+        
+        .command-details ul {
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .command-details li {
+            margin: 12px 0;
+            line-height: 1.7;
+            color: #a0aec0;
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 28px;
+        }
+        
+        /* 빈도별 분류 카드 전용 스타일 */
+        .frequency-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .frequency-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            transition: all 0.2s ease;
+        }
+        
+        .frequency-item:hover {
+            transform: translateX(3px);
+            filter: brightness(1.1);
+        }
+        
+        .frequency-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #00F5FF 0%, #1E90FF 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #0f0f23;
+            font-weight: bold;
+            box-shadow: 0 0 12px rgba(0, 245, 255, 0.4);
+            flex-shrink: 0;
+        }
+        
+        .frequency-text {
+            color: #a0aec0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+        
+        .command-details li::before {
+            content: '•';
+            color: #00F5FF;
+            font-weight: bold;
+            position: absolute;
+            left: 12px;
+            font-size: 1.2em;
+            text-shadow: 0 0 5px rgba(0, 245, 255, 0.5);
+        }
+        
+        .frequency-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 12px;
+            margin-bottom: 4px;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .freq-daily { background: #00F5FF; color: #0f0f23; box-shadow: 0 0 10px rgba(0, 245, 255, 0.4); }
+        .freq-regular { background: #1E90FF; color: white; box-shadow: 0 0 8px rgba(30, 144, 255, 0.3); }
+        .freq-periodic { background: #4169E1; color: white; box-shadow: 0 0 6px rgba(65, 105, 225, 0.3); }
+        .freq-occasional { background: #483D8B; color: white; }
+        .freq-situational { background: #2F2F54; color: white; }
+        
+        .search-box {
+            width: 100%;
+            padding: 18px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #00F5FF;
+            box-shadow: 0 0 0 3px rgba(0, 245, 255, 0.2), 0 0 20px rgba(0, 245, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .highlight {
+            background-color: rgba(0, 245, 255, 0.2);
+            color: #00F5FF;
+            font-weight: 600;
+            padding: 1px 2px;
+            border-radius: 2px;
+            text-shadow: 0 0 5px rgba(0, 245, 255, 0.5);
+        }
+        
+        .workflow-section {
+            background: rgba(0, 245, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            box-shadow: 0 6px 24px rgba(0, 245, 255, 0.1);
+        }
+        
+        .workflow-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 24px;
+            letter-spacing: -0.015em;
+        }
+        
+        .workflow-steps {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .workflow-step {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 24px 28px;
+            border-radius: 12px;
+            border: 1px solid rgba(30, 144, 255, 0.2);
+            border-left: 4px solid #1E90FF;
+            line-height: 1.6;
+            box-shadow: 0 4px 16px rgba(30, 144, 255, 0.1);
+            font-size: 1rem;
+            color: #cbd5e0;
+        }
+        
+        .workflow-step strong {
+            font-weight: 700;
+            color: #00F5FF;
+            text-shadow: 0 0 5px rgba(0, 245, 255, 0.3);
+        }
+        
+        .workflow-step code {
+            background: rgba(0, 245, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #00F5FF;
+            font-weight: 500;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            box-shadow: 0 0 5px rgba(0, 245, 255, 0.2);
+        }
+        
+        #part5 > div:nth-child(16) > p {
+            color: #e2e8f0;
+        }
+        
+        .highlight-box {
+            background: rgba(0, 245, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-left: 4px solid #00F5FF;
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 32px;
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.15), 0 0 20px rgba(0, 245, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .highlight-box:hover {
+            background: rgba(0, 245, 255, 0.12);
+            border-color: rgba(0, 245, 255, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.2), 0 0 30px rgba(0, 245, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .highlight-title {
+            color: #00F5FF;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.4);
+        }
+        
+        .highlight-box p {
+            color: #e2e8f0;
+            line-height: 1.7;
+            margin: 0;
+        }
+        
+        .highlight-box code {
+            background: rgba(0, 245, 255, 0.15);
+            color: #00F5FF;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-weight: 600;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            box-shadow: 0 0 8px rgba(0, 245, 255, 0.2);
+            text-shadow: 0 0 5px rgba(0, 245, 255, 0.6);
+        }
+        
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 245, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #00F5FF;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.2);
+        }
+        
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .scroll-to-top:hover {
+            background: rgba(0, 245, 255, 0.2);
+            border-color: rgba(0, 245, 255, 0.5);
+            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.3), 0 0 30px rgba(0, 245, 255, 0.2);
+            transform: translateY(-3px) scale(1.05);
+            text-shadow: 0 0 15px rgba(0, 245, 255, 0.8);
+        }
+        
+        .scroll-to-top:active {
+            transform: translateY(-1px) scale(0.95);
+        }
+        
+        .footer {
+            background: rgba(0, 245, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 245, 255, 0.15);
+            border-radius: 20px;
+            padding: 32px;
+            margin: 32px 0;
+            text-align: center;
+            color: #e2e8f0;
+            box-shadow: 0 8px 32px rgba(0, 245, 255, 0.1);
+        }
+        
+        .footer p {
+            margin: 12px 0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .footer-link {
+            color: #00F5FF;
+            text-decoration: none;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+        
+        .footer-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(0, 245, 255, 0.8);
+            border-bottom-color: rgba(0, 245, 255, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+                border-radius: 16px;
+            }
+            
+            .header.scrolled {
+                padding: 12px 16px;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header.scrolled h1 {
+                font-size: 1.3rem !important;
+            }
+            
+            .navigation {
+                padding: 24px;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .nav-buttons {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .command-card {
+                padding: 20px;
+                margin: 16px 0;
+            }
+            
+            .workflow-section {
+                padding: 24px 20px;
+                margin: 24px 0;
+            }
+            
+            .section h2 {
+                font-size: 1.8rem;
+                margin-bottom: 28px;
+            }
+            
+            .section h3 {
+                font-size: 1.4rem;
+                margin: 36px 0 20px 0;
+            }
+            
+            .command-title {
+                font-size: 1.3rem;
+            }
+            
+            .workflow-step {
+                padding: 20px;
+                font-size: 0.95rem;
+            }
+            
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .footer {
+                padding: 24px 16px;
+                margin: 24px 0;
+                border-radius: 16px;
+            }
+            
+            .footer p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Claude Code 내장 슬래시 명령어 가이드</h1>
+            <p>대화형 세션에서 슬래시 명령어로 Claude의 동작을 제어하세요.</p>
+            <small>출처: Anthropic 공식 문서</small>
+        </div>
+        
+        <div class="navigation">
+            <h3>📋 목차</h3>
+            <div class="nav-buttons">
+                <button class="nav-btn" onclick="showSection('part1')">🎯 Part 1: 기본 시작</button>
+                <button class="nav-btn" onclick="showSection('part2')">💬 Part 2: 대화 관리</button>
+                <button class="nav-btn" onclick="showSection('part3')">⚙️ Part 3: 시스템 & 계정</button>
+                <button class="nav-btn" onclick="showSection('part4')">🔧 Part 4: 고급 기능</button>
+                <button class="nav-btn" onclick="showSection('part5')">📊 Part 5: 실무 활용</button>
+                <button class="nav-btn" onclick="showSection('search')">🔍 명령어 검색</button>
+            </div>
+        </div>
+        
+        <div class="content">
+            
+            <!-- Part 1: 기본 시작 -->
+            <div id="part1" class="section active">
+                <h2>🎯 Part 1: 기본 시작 (Essential Start)</h2>
+                <p>Claude Code를 처음 사용한다면 이 4개 명령어부터 시작하세요. 이 가이드는 Anthropic 공식 문서를 기반으로 작성되었으며, 각 명령어의 정확한 기능과 사용법을 설명합니다.</p>
+                
+                <div class="command-card">
+                    <div class="command-title">📚 /help - 도움말 시스템</div>
+                    <div class="command-usage">> /help</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 사용법 도움말 보기<br>
+                        <strong>사용 시점:</strong> 명령어에 대해 알고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>모든 사용 가능한 슬래시 명령어 목록 표시</li>
+                            <li>.claude/commands/의 프로젝트 커스텀 명령어 포함 (project 표시)</li>
+                            <li>~/.claude/commands/의 개인 커스텀 명령어 포함 (user 표시)</li>
+                            <li>연결된 MCP 서버의 명령어도 함께 표시</li>
+                        </ul>
+                    </div>                  
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🤖 /model - AI 모델 선택</div>
+                    <div class="command-usage">> /model</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> AI 모델 선택 또는 변경<br>
+                        <strong>사용 시점:</strong> 작업에 적합한 모델로 변경하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>현재 세션에서 실시간으로 모델 전환 가능</li>
+                            <li>구독 계정 권한에 따라 사용 가능한 모델 목록 표시</li>
+                            <li>세션 종료 시까지 선택한 모델 유지</li>
+                            <li>작업 복잡도에 따라 최적 모델 선택 가능</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🚀 /init - 프로젝트 초기화 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /init</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> CLAUDE.md 가이드로 프로젝트 초기화<br>
+                        <strong>사용 시점:</strong> 새 프로젝트를 시작할 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>프로젝트 전체를 분석하여 CLAUDE.md 파일 자동 생성</li>
+                            <li>프로젝트 구조, 기술 스택, 파일 관계 파악</li>
+                            <li>향후 Claude Code 세션에서 자동으로 컨텍스트 제공</li>
+                            <li>팀 프로젝트에서 공유 가능한 프로젝트 메모리 생성</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">💾 /memory - 메모리 파일 편집 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /memory</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> CLAUDE.md 메모리 파일 편집<br>
+                        <strong>사용 시점:</strong> 프로젝트 정보를 업데이트하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>CLAUDE.md 파일 직접 편집 인터페이스 제공</li>
+                            <li>프로젝트 컨벤션, 결정사항, 중요 컨텍스트 문서화</li>
+                            <li>모든 Claude Code 세션에서 자동으로 프롬프트에 포함</li>
+                            <li>살아있는 문서로서 지속적 업데이트 권장</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 2: 대화 관리 -->
+            <div id="part2" class="section">
+                <h2>💬 Part 2: 대화 관리 (Conversation Management)</h2>
+                
+                <div class="command-card">
+                    <div class="command-title">🗑️ /clear - 대화 기록 완전 삭제 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /clear</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 대화 기록 지우기<br>
+                        <strong>사용 시점:</strong> 새로운 주제로 완전히 시작하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>대화 기록과 컨텍스트 완전 초기화</li>
+                            <li>토큰 카운트 0으로 리셋되어 새 세션 시작</li>
+                            <li>세션 종료 후 재시작보다 빠른 새로고침</li>
+                            <li>민감한 정보 논의 후 정리에 유용</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🗜️ /compact - 대화 압축 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /compact<br>> /compact [instructions]</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 선택적 집중 지침과 함께 대화 압축<br>
+                        <strong>사용 시점:</strong> 대화가 너무 길어졌을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>현재 대화를 요약하며 핵심 정보 보존</li>
+                            <li>전체 토큰 카운트 감소로 긴 대화 지속 가능</li>
+                            <li>선택적 지시사항으로 특정 주제만 보존 가능</li>
+                            <li>컨텍스트 한계 도달 전에 예방적 사용 권장</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">👁️ /review - 코드 리뷰 요청 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /review</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 코드 리뷰 요청<br>
+                        <strong>사용 시점:</strong> 코드를 작성하고 피드백이 필요할 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>작성된 코드에 대한 자동 품질 분석</li>
+                            <li>베스트 프랙티스, 보안, 성능 관점에서 검토</li>
+                            <li>구체적인 개선 제안 및 코드 예시 제공</li>
+                            <li>현재 세션에서 작업한 모든 코드 대상</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 3: 시스템 & 계정 -->
+            <div id="part3" class="section">
+                <h2>⚙️ Part 3: 시스템 & 계정 (System & Account)</h2>
+                
+                <div class="command-card">
+                    <div class="command-title">🔑 /login - Anthropic 계정 전환</div>
+                    <div class="command-usage">> /login</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> Anthropic 계정 전환<br>
+                        <strong>사용 시점:</strong> 다른 계정으로 전환하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>여러 Anthropic 계정 간 전환 기능</li>
+                            <li>개인/업무 계정 또는 팀 계정 번갈아 사용</li>
+                            <li>계정별 권한 및 설정 자동 적용</li>
+                            <li>대화 기록도 계정별로 분리 관리</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🚪 /logout - 계정 로그아웃</div>
+                    <div class="command-usage">> /logout</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> Anthropic 계정에서 로그아웃<br>
+                        <strong>사용 시점:</strong> 현재 계정에서 로그아웃하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>현재 세션에서 안전하게 로그아웃</li>
+                            <li>보안상 민감한 작업 후 계정 정리</li>
+                            <li>공유 컴퓨터에서 사용 후 사생활 보호</li>
+                            <li>다른 계정으로 다시 로그인 가능</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">📊 /status - 계정 및 시스템 상태 확인 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /status</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 계정 및 시스템 상태 보기<br>
+                        <strong>사용 시점:</strong> 현재 상태를 확인하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>문제 발생 시 첫 진단 도구</li>
+                            <li>정기적인 시스템 점검</li>
+                            <li>새 환경 설정 후 확인</li>
+                            <li>성능 이슈 발생 시</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🩺 /doctor - 시스템 건강 상태 점검 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /doctor</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> Claude Code 설치 상태 확인<br>
+                        <strong>사용 시점:</strong> 시스템 문제를 진단하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>Claude Code 작동 오류</li>
+                            <li>환경 설정 문제</li>
+                            <li>네트워크/연결 문제</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">⚙️ /config - 설정 보기/수정 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /config</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 구성 보기/수정<br>
+                        <strong>사용 시점:</strong> 설정을 확인하거나 수정하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>환경 설정 관리</li>
+                            <li>시스템 설정 변경</li>
+                            <li>초기 환경 구성</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🔒 /permissions - 권한 설정 보기/수정 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /permissions</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 권한 보기 또는 업데이트<br>
+                        <strong>사용 시점:</strong> 권한을 확인하거나 수정하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>보안이 중요한 프로젝트 작업 시</li>
+                            <li>새로운 환경에서 작업 시작할 때</li>
+                            <li>문제 해결 시</li>
+                            <li>정기적인 점검</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 4: 고급 기능 -->
+            <div id="part4" class="section">
+                <h2>🔧 Part 4: 고급 기능 (Advanced Features)</h2>
+                
+                <div class="command-card">
+                    <div class="command-title">📁 /add-dir - 작업 디렉토리 추가 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /add-dir</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 추가 작업 디렉토리 추가<br>
+                        <strong>사용 시점:</strong> 추가 디렉토리를 작업 범위에 포함하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>새 프로젝트 폴더 추가</li>
+                            <li>외부 라이브러리/모듈 분석</li>
+                            <li>프로젝트 구조 확장</li>
+                            <li>협업 프로젝트</li>
+                            <li>문제 해결 시</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🖥️ /terminal-setup - 터미널 설정 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /terminal-setup</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> Claude Code가 터미널 환경을 최적화<br>
+                        <strong>사용 시점:</strong> 터미널 환경을 설정하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>Claude Code를 처음 설치했을 때</li>
+                            <li>명령어가 제대로 작동하지 않을 때</li>
+                            <li>새 컴퓨터나 서버에서 작업할 때</li>
+                            <li>터미널 접근 권한 관련 오류가 있을 때</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">📝 /vim - Vim 모드 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /vim</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 삽입 모드와 명령 모드를 번갈아 사용하는 vim 모드 진입<br>
+                        <strong>사용 시점:</strong> Vim 스타일 편집을 원할 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 상황</h4>
+                        <ul>
+                            <li>대용량 코드 파일 편집</li>
+                            <li>반복적인 텍스트 조작</li>
+                            <li>정밀한 코드 리팩토링 설명</li>
+                            <li>복잡한 정규식이나 설정 파일</li>
+                            <li>키보드만 사용해야 하는 환경</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">🔌 /mcp - MCP 서버 관리 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /mcp</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> MCP 서버 연결 및 OAuth 인증 관리<br>
+                        <strong>사용 시점:</strong> 외부 서비스와 연동하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>Model Context Protocol 서버 연결 상태 관리</li>
+                            <li>OAuth 인증을 통한 외부 서비스 연동</li>
+                            <li>MCP 프로토콜 기반 다양한 서버 지원 *(구체적 서비스는 가변)</li>
+                            <li>연결된 MCP 서버에서 제공하는 슬래시 명령어 자동 등록</li>
+                            <li>서버별 기능 및 인증 상태 모니터링</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-title">💰 /cost - 사용량 및 비용 확인</div>
+                    <div class="command-usage">> /cost</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 사용량 및 비용 정보 보기<br>
+                        <strong>사용 시점:</strong> 현재 세션의 사용량과 비용을 확인하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>현재 대화 세션의 토큰 사용량 표시</li>
+                            <li>예상 비용 및 요금 정보 확인</li>
+                            <li>모델별 토큰 소비량 분석</li>
+                            <li>사용량 추이 및 최적화 제안</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-title">💬 /pr_comments - Pull Request 댓글</div>
+                    <div class="command-usage">> /pr_comments</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 풀 리퀘스트 댓글 보기<br>
+                        <strong>사용 시점:</strong> GitHub PR의 댓글을 확인하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>PR 리뷰를 시작하기 전</li>
+                            <li>코드 수정 후 새 피드백 확인할 때</li>
+                            <li>복잡한 PR의 토론 내용을 정리할 때</li>
+                            <li>승인 상태와 요청사항을 빠르게 파악할 때</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-title">🤖 /agents - AI 에이전트 관리 ⚠️⚠️⚠️</div>
+                    <div class="command-usage">> /agents</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 전문 작업을 위한 사용자 정의 AI 하위 에이전트 관리<br>
+                        <strong>사용 시점:</strong> 특화된 AI 에이전트가 필요할 때
+                    </div>
+                    <div class="command-details">
+                        <h4>사용 시점</h4>
+                        <ul>
+                            <li>반복적인 특화 작업이 있을 때</li>
+                            <li>일관된 작업 방식이 필요할 때</li>
+                            <li>특정 도메인 지식이 필요한 작업이 있을 때</li>
+                            <li>워크플로우 자동화를 원할 때</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <div class="command-title">🐛 /bug - 버그 신고</div>
+                    <div class="command-usage">> /bug "설명"</div>
+                    <div class="command-desc">
+                        <strong>공식 기능:</strong> 버그 신고 (대화를 Anthropic에 전송)<br>
+                        <strong>사용 시점:</strong> 버그를 신고하고 싶을 때
+                    </div>
+                    <div class="command-details">
+                        <h4>상세 기능</h4>
+                        <ul>
+                            <li>현재 대화 내역을 자동으로 Anthropic에 전송</li>
+                            <li>시스템 정보(버전, OS, 브라우저 등) 자동 포함</li>
+                            <li>버그 리포트 ID 생성 및 추적 가능</li>
+                            <li>Claude Code 개선을 위한 직접적인 피드백 채널</li>
+                            <li>⚠️ 주의: 대화 내역 전송에 따른 민감 정보 고려 필요</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Part 5: 실무 활용 -->
+            <div id="part5" class="section">
+                <h2>📊 Part 5: 실무 활용 가이드</h2>
+                
+                <div class="highlight-box">
+                    <h4 class="highlight-title">⚠️ 중요 안내</h4>
+                    <p>아래의 사용 빈도와 패턴은 예시이며, 실제 사용법은 개인의 작업 환경, 프로젝트 특성, 개별적 선호도에 따라 크게 달라질 수 있습니다.</p>
+                </div>
+                
+                <h3>🎯 21개 명령어 학습 순서</h3>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">1단계: 필수 시작 (4개)</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">1. <code>/help</code> - 도움말 확인</div>
+                        <div class="workflow-step">2. <code>/model</code> - AI 모델 선택</div>
+                        <div class="workflow-step">3. <code>/init</code> - 프로젝트 초기화</div>
+                        <div class="workflow-step">4. <code>/memory</code> - 메모리 파일 편집</div>
+                    </div>
+                </div>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">2단계: 기본 활용 (3개)</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">5. <code>/review</code> - 코드 리뷰</div>
+                        <div class="workflow-step">6. <code>/clear</code> - 대화 삭제</div>
+                        <div class="workflow-step">7. <code>/compact</code> - 대화 압축</div>
+                    </div>
+                </div>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">3단계: 시스템 관리 (6개)</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">8. <code>/status</code> - 계정 및 시스템 상태 확인</div>
+                        <div class="workflow-step">9. <code>/login</code> - 계정 로그인</div>
+                        <div class="workflow-step">10. <code>/logout</code> - 계정 로그아웃</div>
+                        <div class="workflow-step">11. <code>/doctor</code> - 시스템 진단</div>
+                        <div class="workflow-step">12. <code>/config</code> - 설정 관리</div>
+                        <div class="workflow-step">13. <code>/permissions</code> - 권한 설정</div>
+                    </div>
+                </div>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">4단계: 고급 기능 (8개)</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">14. <code>/add-dir</code> - 디렉토리 추가</div>
+                        <div class="workflow-step">15. <code>/terminal-setup</code> - 터미널 설정</div>
+                        <div class="workflow-step">16. <code>/vim</code> - Vim 모드</div>
+                        <div class="workflow-step">17. <code>/mcp</code> - MCP 서버 관리</div>
+                        <div class="workflow-step">18. <code>/cost</code> - 사용량 및 비용 확인</div>
+                        <div class="workflow-step">19. <code>/pr_comments</code> - PR 댓글 보기</div>
+                        <div class="workflow-step">20. <code>/agents</code> - AI 에이전트 관리</div>
+                        <div class="workflow-step">21. <code>/bug</code> - 버그 신고</div>
+                    </div>
+                </div>
+                
+                <h3>📈 사용 빈도별 명령어 분류 *(예시 기준)</h3>
+                
+                <div class="command-card">
+                    <div class="command-title">
+                        <span class="frequency-badge freq-daily">🔥 매일 사용 (예시)</span>
+                        High Frequency - 참고용 분류
+                    </div>
+                    <div class="command-desc">
+                        <div class="frequency-list">
+                            <div class="frequency-item">
+                                <div class="frequency-icon">❓</div>
+                                <div class="frequency-text"><strong>/help</strong> - 새로운 명령어나 기능 확인시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">👁️</div>
+                                <div class="frequency-text"><strong>/review</strong> - 코드 작성 후 품질 검토</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">📊</div>
+                                <div class="frequency-text"><strong>/status</strong> - 문제 발생시 첫 번째 확인</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">
+                        <span class="frequency-badge freq-regular">⚡ 주 3-5회 사용 (예시)</span>
+                        Regular Use - 참고용 분류
+                    </div>
+                    <div class="command-desc">
+                        <div class="frequency-list">
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🗜️</div>
+                                <div class="frequency-text"><strong>/compact</strong> - 긴 대화 세션 정리</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🩺</div>
+                                <div class="frequency-text"><strong>/doctor</strong> - 시스템 문제 진단</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🤖</div>
+                                <div class="frequency-text"><strong>/model</strong> - 작업 특성에 따른 모델 전환</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">
+                        <span class="frequency-badge freq-periodic">📅 주 1-2회 사용 (예시)</span>
+                        Periodic Use - 참고용 분류
+                    </div>
+                    <div class="command-desc">
+                        <div class="frequency-list">
+                            <div class="frequency-item">
+                                <div class="frequency-icon">⚙️</div>
+                                <div class="frequency-text"><strong>/config</strong> - 설정 조정</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">💾</div>
+                                <div class="frequency-text"><strong>/memory</strong> - 프로젝트 정보 업데이트</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">💰</div>
+                                <div class="frequency-text"><strong>/cost</strong> - 사용량 및 비용 확인</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🔒</div>
+                                <div class="frequency-text"><strong>/permissions</strong> - 권한 설정 검토</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">
+                        <span class="frequency-badge freq-occasional">🌙 월 1회 이하 (예시)</span>
+                        Occasional Use - 참고용 분류
+                    </div>
+                    <div class="command-desc">
+                        <div class="frequency-list">
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🚀</div>
+                                <div class="frequency-text"><strong>/init</strong> - 새 프로젝트 시작시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🗑️</div>
+                                <div class="frequency-text"><strong>/clear</strong> - 완전한 새 시작 필요시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🔑</div>
+                                <div class="frequency-text"><strong>/login</strong>/<strong>/logout</strong> - 계정 전환시</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="command-card">
+                    <div class="command-title">
+                        <span class="frequency-badge freq-situational">🎯 상황별 사용 (예시)</span>
+                        Situational - 참고용 분류
+                    </div>
+                    <div class="command-desc">
+                        <div class="frequency-list">
+                            <div class="frequency-item">
+                                <div class="frequency-icon">📁</div>
+                                <div class="frequency-text"><strong>/add-dir</strong> - 다중 프로젝트 작업시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🖥️</div>
+                                <div class="frequency-text"><strong>/terminal-setup</strong> - 초기 환경 설정시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">📝</div>
+                                <div class="frequency-text"><strong>/vim</strong> - Vim 사용자만</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🔌</div>
+                                <div class="frequency-text"><strong>/mcp</strong> - 외부 서비스 연동시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">💬</div>
+                                <div class="frequency-text"><strong>/pr_comments</strong> - GitHub PR 작업시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🤖</div>
+                                <div class="frequency-text"><strong>/agents</strong> - 전문 작업 필요시</div>
+                            </div>
+                            <div class="frequency-item">
+                                <div class="frequency-icon">🐛</div>
+                                <div class="frequency-text"><strong>/bug</strong> - 문제 발생시</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>💡 실제 사용 패턴 인사이트</h3>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">개발자 일과 기준</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step"><strong>아침:</strong> <code>/status</code> → <code>/doctor</code> (상태 점검)</div>
+                        <div class="workflow-step"><strong>코딩 중:</strong> <code>/review</code> (품질 확인)</div>
+                        <div class="workflow-step"><strong>오후:</strong> <code>/compact</code> (대화 정리)</div>
+                        <div class="workflow-step"><strong>문제시:</strong> <code>/doctor</code> → <code>/help</code> (문제 해결)</div>
+                    </div>
+                </div>
+                
+                <div class="workflow-section">
+                    <div class="workflow-title">프로젝트 단계별</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step"><strong>시작:</strong> <code>/init</code> → <code>/config</code> → <code>/permissions</code></div>
+                        <div class="workflow-step"><strong>진행:</strong> <code>/review</code> → <code>/compact</code></div>
+                        <div class="workflow-step"><strong>협업:</strong> <code>/pr_comments</code> → <code>/agents</code></div>
+                        <div class="workflow-step"><strong>마무리:</strong> <code>/memory</code> → <code>/clear</code></div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <h4 class="highlight-title">🎯 핵심 추천</h4>
+                    <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/status</code>, <code>/compact</code>로, 이것들만 익혀도 Claude Code의 대부분 기능을 활용할 수 있습니다.</p>
+                </div>
+            </div>
+            
+            <!-- 검색 섹션 -->
+            <div id="search" class="section">
+                <h2>🔍 명령어 검색</h2>
+                <input type="text" class="search-box" id="searchInput" placeholder="명령어나 기능을 검색해보세요... (예: review, 코드, 토큰, 권한)" onkeyup="searchCommands()">
+                <div id="searchResults"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>📖 이 가이드는 Anthropic 공식 문서를 기반으로 작성되었습니다.</p>
+            <p>최신 정보는 <a href="https://docs.anthropic.com/en/docs/claude-code/slash-commands" class="footer-link">공식 문서</a>에서 확인하세요.</p>
+            <p><small>⚠️ 사용 빈도 및 패턴 분류는 예시이며, 실제 사용법은 개인차가 있습니다.</small></p>
+        </div>
+    </div>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+        ↑
+    </div>
+    
+    <script>
+        // 섹션 전환 함수
+        function showSection(sectionId) {
+            // 모든 섹션 숨기기
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 선택된 섹션 보이기
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        }
+        
+        // 명령어 데이터
+        const commands = [
+            {
+                name: '/help',
+                title: '도움말 시스템',
+                description: '명령어에 대해 알고 싶을 때',
+                details: ['모든 사용 가능한 슬래시 명령어 목록 표시', '프로젝트 커스텀 명령어 포함', '개인 커스텀 명령어 포함', 'MCP 서버 명령어 표시'],
+                category: 'basic',
+                frequency: 'daily'
+            },
+            {
+                name: '/model',
+                title: 'AI 모델 선택',
+                description: '작업에 적합한 모델로 변경하고 싶을 때',
+                details: ['실시간 모델 전환', 'Sonnet, Haiku, Opus 지원', '세션별 모델 유지', '작업 복잡도별 최적화'],
+                category: 'basic',
+                frequency: 'regular'
+            },
+            {
+                name: '/init',
+                title: '프로젝트 초기화',
+                description: '새 프로젝트를 시작할 때',
+                details: ['CLAUDE.md 자동 생성', '프로젝트 구조 분석', '컨텍스트 자동 제공', '팀 공유 가능'],
+                category: 'basic',
+                frequency: 'occasional'
+            },
+            {
+                name: '/memory',
+                title: '메모리 파일 편집',
+                description: '프로젝트 정보를 업데이트하고 싶을 때',
+                details: ['CLAUDE.md 직접 편집', '프로젝트 컨벤션 문서화', '자동 프롬프트 포함', '살아있는 문서'],
+                category: 'basic',
+                frequency: 'periodic'
+            },
+            {
+                name: '/clear',
+                title: '대화 기록 완전 삭제',
+                description: '새로운 주제로 완전히 시작하고 싶을 때',
+                details: ['컨텍스트 완전 초기화', '토큰 카운트 리셋', '빠른 새로고침', '민감 정보 정리'],
+                category: 'conversation',
+                frequency: 'occasional'
+            },
+            {
+                name: '/compact',
+                title: '대화 압축',
+                description: '대화가 너무 길어졌을 때',
+                details: ['핵심 정보 보존', '토큰 카운트 감소', '선택적 주제 보존', '예방적 사용'],
+                category: 'conversation',
+                frequency: 'regular'
+            },
+            {
+                name: '/review',
+                title: '코드 리뷰 요청',
+                description: '코드를 작성하고 피드백이 필요할 때',
+                details: ['자동 품질 분석', '베스트 프랙티스 검토', '구체적 개선 제안', '전체 코드 검토'],
+                category: 'conversation',
+                frequency: 'daily'
+            },
+            {
+                name: '/login',
+                title: 'Anthropic 계정 전환',
+                description: '다른 계정으로 전환하고 싶을 때',
+                details: ['다중 계정 관리', '개인/업무 계정 분리', '자동 설정 적용', '계정별 기록 분리'],
+                category: 'system',
+                frequency: 'occasional'
+            },
+            {
+                name: '/logout',
+                title: '계정 로그아웃',
+                description: '현재 계정에서 로그아웃하고 싶을 때',
+                details: ['안전한 로그아웃', '보안 강화', '사생활 보호', '재로그인 가능'],
+                category: 'system',
+                frequency: 'occasional'
+            },
+            {
+                name: '/status',
+                title: '계정 및 시스템 상태 확인',
+                description: '현재 상태를 확인하고 싶을 때',
+                details: ['계정 정보 표시', '모델 및 설정 상태', 'MCP 서버 연결', '권한 설정 정보'],
+                category: 'system',
+                frequency: 'daily'
+            },
+            {
+                name: '/doctor',
+                title: '시스템 건강 상태 점검',
+                description: '시스템 문제를 진단하고 싶을 때',
+                details: ['설치 상태 진단', '호환성 검사', '네트워크 테스트', '해결 방법 제안'],
+                category: 'system',
+                frequency: 'regular'
+            },
+            {
+                name: '/config',
+                title: '설정 보기/수정',
+                description: '설정을 확인하거나 수정하고 싶을 때',
+                details: ['JSON 형식 표시', '대화형 수정', 'CLI 연동', '프로젝트별 분리'],
+                category: 'system',
+                frequency: 'periodic'
+            },
+            {
+                name: '/permissions',
+                title: '권한 설정 보기/수정',
+                description: '권한을 확인하거나 수정하고 싶을 때',
+                details: ['파일 시스템 제어', '명령어 패턴 관리', '네트워크 권한', '세밀한 보안 제어'],
+                category: 'system',
+                frequency: 'periodic'
+            },
+            {
+                name: '/add-dir',
+                title: '작업 디렉토리 추가',
+                description: '추가 디렉토리를 작업 범위에 포함하고 싶을 때',
+                details: ['디렉토리 목록 표시', '접근 범위 확장', '다중 프로젝트 작업', '공유 라이브러리 포함'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/terminal-setup',
+                title: '터미널 설정',
+                description: '터미널 환경을 설정하고 싶을 때',
+                details: ['키 바인딩 설치', '멀티라인 입력', '자동완성 기능', '호환성 설정'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/vim',
+                title: 'Vim 모드',
+                description: 'Vim 스타일 편집을 원할 때',
+                details: ['모드 전환 방식', 'Vim 키 바인딩', '다중 모드 편집', '친숙한 인터페이스'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/mcp',
+                title: 'MCP 서버 관리',
+                description: '외부 서비스와 연동하고 싶을 때',
+                details: ['서버 연결 관리', 'OAuth 인증', '다양한 서비스 지원', '자동 명령어 등록'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/cost',
+                title: '사용량 및 비용 확인',
+                description: '현재 세션의 사용량과 비용을 확인하고 싶을 때',
+                details: ['토큰 사용량 표시', '예상 비용 확인', '모델별 소비량 분석', '사용량 최적화 제안'],
+                category: 'advanced',
+                frequency: 'periodic'
+            },
+            {
+                name: '/pr_comments',
+                title: 'Pull Request 댓글',
+                description: 'GitHub PR의 댓글을 확인하고 싶을 때',
+                details: ['댓글 직접 조회', '시간순 정렬', '피드백 확인', '협업 효율성'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/agents',
+                title: 'AI 에이전트 관리',
+                description: '특화된 AI 에이전트가 필요할 때',
+                details: ['전문 에이전트', '활성화/비활성화', '커스텀 생성', '다중 에이전트 운영'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+            {
+                name: '/bug',
+                title: '버그 신고',
+                description: '버그를 신고하고 싶을 때',
+                details: ['대화 내역 전송', '시스템 정보 포함', '추적 ID 생성', '직접 피드백'],
+                category: 'advanced',
+                frequency: 'situational'
+            },
+        ];
+        
+        // 검색 함수
+        function searchCommands() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (searchTerm.length < 2) {
+                resultsDiv.innerHTML = '<p style="color: #666;">2글자 이상 입력해주세요.</p>';
+                return;
+            }
+            
+            const filteredCommands = commands.filter(cmd => 
+                cmd.name.toLowerCase().includes(searchTerm) ||
+                cmd.title.toLowerCase().includes(searchTerm) ||
+                cmd.description.toLowerCase().includes(searchTerm) ||
+                cmd.details.some(detail => detail.toLowerCase().includes(searchTerm))
+            );
+            
+            if (filteredCommands.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #666;">검색 결과가 없습니다.</p>';
+                return;
+            }
+            
+            let resultsHTML = '';
+            filteredCommands.forEach(cmd => {
+                const frequencyClass = `freq-${cmd.frequency}`;
+                const frequencyText = {
+                    'daily': '🔥 매일 사용',
+                    'regular': '⚡ 주 3-5회',
+                    'periodic': '📅 주 1-2회',
+                    'occasional': '🌙 월 1회 이하',
+                    'situational': '🎯 상황별'
+                }[cmd.frequency];
+                
+                resultsHTML += `
+                    <div class="command-card">
+                        <div class="command-title">
+                            <span class="frequency-badge ${frequencyClass}">${frequencyText}</span>
+                            ${highlightText(cmd.name + ' - ' + cmd.title, searchTerm)}
+                        </div>
+                        <div class="command-usage">> ${cmd.name}</div>
+                        <div class="command-desc">
+                            <strong>사용 시점:</strong> ${highlightText(cmd.description, searchTerm)}
+                        </div>
+                        <div class="command-details">
+                            <h4>주요 기능:</h4>
+                            <ul>
+                                ${cmd.details.map(detail => `<li>${highlightText(detail, searchTerm)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = resultsHTML;
+        }
+        
+        // 검색어 하이라이트 함수
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        showSection('part1');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        showSection('part2');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        showSection('part3');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        showSection('part4');
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        showSection('part5');
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        showSection('search');
+                        document.getElementById('searchInput').focus();
+                        break;
+                }
+            }
+        });
+        
+        // 스크롤 시 헤더 축소 효과 & Scroll to Top 버튼
+        let lastScrollTop = 0;
+        let ticking = false;
+        const header = document.querySelector('.header');
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        function updateHeader() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // 헤더 축소 효과 - 히스테리시스 적용 (깜빡임 방지)
+            const isScrolled = header.classList.contains('scrolled');
+            if (!isScrolled && scrollTop > 120) {
+                header.classList.add('scrolled');
+            } else if (isScrolled && scrollTop < 80) {
+                header.classList.remove('scrolled');
+            }
+
+            // Scroll to Top 버튼 표시/숨김 - 히스테리시스 적용
+            const isVisible = scrollToTopBtn.classList.contains('show');
+            if (!isVisible && scrollTop > 320) {
+                scrollToTopBtn.classList.add('show');
+            } else if (isVisible && scrollTop < 280) {
+                scrollToTopBtn.classList.remove('show');
+            }
+
+            lastScrollTop = scrollTop;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateHeader);
+                ticking = true;
+            }
+        });
+        
+        // Scroll to Top 함수
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('part1');
+        });
+    </script>
+</body>
+</html>
