@@ -673,6 +673,7 @@
         <div class="navigation">
             <h3>📋 목차</h3>
             <div class="nav-buttons">
+                <button class="nav-btn" onclick="showSection('overview')">📖 개요</button>
                 <button class="nav-btn" onclick="showSection('part1')">🎯 Part 1: 기본 시작</button>
                 <button class="nav-btn" onclick="showSection('part2')">💬 Part 2: 대화 관리</button>
                 <button class="nav-btn" onclick="showSection('part3')">⚙️ Part 3: 시스템 & 계정</button>
@@ -683,9 +684,35 @@
         </div>
         
         <div class="content">
-            
+            <!-- 개요 섹션 -->
+            <div id="overview" class="section active">
+                <h2>📖 Claude Code 슬래시 명령어 개요</h2>
+                <p>Claude Code는 21개의 강력한 빌트인 슬래시 명령어를 제공합니다. 이 가이드는 Anthropic 공식 문서를 기반으로 작성되었으며, 각 명령어의 정확한 기능과 사용법을 설명합니다.</p>
+
+                <div class="workflow-section">
+                    <div class="workflow-title">🎯 빠른 시작 가이드</div>
+                    <div class="workflow-steps">
+                        <div class="workflow-step">
+                            <strong>1단계:</strong> <code>/help</code>로 사용 가능한 명령어 확인
+                        </div>
+                        <div class="workflow-step">
+                            <strong>2단계:</strong> <code>/status</code>로 시스템 상태 점검
+                        </div>
+                        <div class="workflow-step">
+                            <strong>3단계:</strong> <code>/model</code>로 적합한 AI 모델 선택
+                        </div>
+                        <div class="workflow-step">
+                            <strong>4단계:</strong> <code>/init</code>로 프로젝트 초기화
+                        </div>
+                    </div>
+                </div>
+
+                <h3>💡 핵심 추천</h3>
+                <p>가장 중요한 4개 명령어는 <code>/help</code>, <code>/review</code>, <code>/status</code>, <code>/compact</code>로, 이것들만 익혀도 Claude Code의 대부분 기능을 활용할 수 있습니다.</p>
+            </div>
+
             <!-- Part 1: 기본 시작 -->
-            <div id="part1" class="section active">
+            <div id="part1" class="section">
                 <h2>🎯 Part 1: 기본 시작 (Essential Start)</h2>
                 <p>Claude Code를 처음 사용한다면 이 4개 명령어부터 시작하세요. 이 가이드는 Anthropic 공식 문서를 기반으로 작성되었으며, 각 명령어의 정확한 기능과 사용법을 설명합니다.</p>
                 
@@ -1656,7 +1683,7 @@
         
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            showSection('part1');
+            showSection('overview');
         });
     </script>
 </body>
